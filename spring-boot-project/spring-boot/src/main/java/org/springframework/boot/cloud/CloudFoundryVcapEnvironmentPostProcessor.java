@@ -39,6 +39,10 @@ import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.util.StringUtils;
 
 /**
+ * 技术汇总：https://www.cnblogs.com/heidsoft/p/3451825.html
+ * <p>
+ * vcap：vmware's cloud application platform
+ * <p>
  * An {@link EnvironmentPostProcessor} that knows where to find VCAP (a.k.a. Cloud
  * Foundry) meta data in the existing environment. It parses out the VCAP_APPLICATION and
  * VCAP_SERVICES meta data and dumps it in a form that is easily consumed by

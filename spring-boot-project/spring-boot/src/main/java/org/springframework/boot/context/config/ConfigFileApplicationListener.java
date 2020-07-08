@@ -195,6 +195,7 @@ public class ConfigFileApplicationListener implements EnvironmentPostProcessor, 
 	 * @param context the context to configure
 	 */
 	protected void addPostProcessors(ConfigurableApplicationContext context) {
+		// 默认属性源放在最后
 		context.addBeanFactoryPostProcessor(new PropertySourceOrderingPostProcessor(context));
 	}
 
@@ -232,6 +233,8 @@ public class ConfigFileApplicationListener implements EnvironmentPostProcessor, 
 	}
 
 	/**
+	 * 将默认属性源放至环境属性的末尾
+	 *
 	 * {@link BeanFactoryPostProcessor} to re-order our property sources below any
 	 * {@code @PropertySource} items added by the {@link ConfigurationClassPostProcessor}.
 	 */
@@ -311,11 +314,11 @@ public class ConfigFileApplicationListener implements EnvironmentPostProcessor, 
 			while (!this.profiles.isEmpty()) {
 			    // 获得 Profile 对象
 				Profile profile = this.profiles.poll();
-				// 添加 Profile 到 environment 中
+				// 添加未激活的 Profile 到 environment 中
 				if (profile != null && !profile.isDefaultProfile()) {
 					addProfileToEnvironment(profile.getName());
 				}
-				// 加载配置
+				// 加载配置文件的配置
 				load(profile, this::getPositiveProfileFilter,
 						addToLoaded(MutablePropertySources::addLast, false));
 				// 添加到 processedProfiles 中，表示已处理
@@ -481,7 +484,7 @@ public class ConfigFileApplicationListener implements EnvironmentPostProcessor, 
 			}
 		}
 
-		// IGNORE 先。add by 芋艿
+		// IGNORE 先
 		private boolean canLoadFileExtension(PropertySourceLoader loader, String name) {
 			return Arrays.stream(loader.getFileExtensions())
 					.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(name, fileExtension));

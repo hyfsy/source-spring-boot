@@ -87,6 +87,8 @@ class ExitCodeGenerators implements Iterable<ExitCodeGenerator> {
 		int exitCode = 0;
 		for (ExitCodeGenerator generator : this.generators) {
 			try {
+				// 第一个代码为负值，则取最小的退出代码
+				// 第一个代码为正值，则取最大的退出代码
 				int value = generator.getExitCode();
 				if (value > 0 && value > exitCode || value < 0 && value < exitCode) {
 					exitCode = value;

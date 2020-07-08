@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 将系统中 spring.application.json 属性对应的json字符串解析并放入环境对象中
+ *
  * An {@link EnvironmentPostProcessor} that parses JSON from
  * {@code spring.application.json} or equivalently {@code SPRING_APPLICATION_JSON} and
  * adds it as a map property source to the {@link Environment}. The new properties are

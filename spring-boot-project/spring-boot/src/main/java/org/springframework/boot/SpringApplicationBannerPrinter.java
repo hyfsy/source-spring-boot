@@ -113,6 +113,7 @@ class SpringApplicationBannerPrinter {
 	private String createStringFromBanner(Banner banner, Environment environment,
 			Class<?> mainApplicationClass) throws UnsupportedEncodingException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		// 创建打印流，打印到流中
 		banner.printBanner(environment, mainApplicationClass, new PrintStream(baos));
 		String charset = environment.getProperty("spring.banner.charset", "UTF-8");
 		return baos.toString(charset);

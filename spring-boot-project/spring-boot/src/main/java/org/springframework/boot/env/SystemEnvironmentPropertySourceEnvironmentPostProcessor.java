@@ -66,7 +66,7 @@ public class SystemEnvironmentPropertySourceEnvironmentPostProcessor implements 
 		Map<String, Object> originalSource = (Map<String, Object>) propertySource.getSource();
 		// 创建 SystemEnvironmentPropertySource 对象
 		SystemEnvironmentPropertySource source = new OriginAwareSystemEnvironmentPropertySource(sourceName, originalSource);
-		// 进行替换
+		// 通过名称查找并进行替换
 		environment.getPropertySources().replace(sourceName, source);
 	}
 

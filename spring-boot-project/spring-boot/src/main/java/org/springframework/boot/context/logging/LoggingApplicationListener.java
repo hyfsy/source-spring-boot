@@ -246,9 +246,9 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	 * @param classLoader the classloader
 	 */
 	protected void initialize(ConfigurableEnvironment environment, ClassLoader classLoader) {
-	    // 初始化 LoggingSystemProperties 配置
+	    // 初始化 LoggingSystemProperties 配置，将一些内置的日志配置加载到System中
 		new LoggingSystemProperties(environment).apply();
-		// 初始化 LogFile
+		// 初始化 LogFile，设置日志的路径及文件名
 		LogFile logFile = LogFile.get(environment);
 		if (logFile != null) {
 			logFile.applyToSystemProperties();

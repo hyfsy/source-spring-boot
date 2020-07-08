@@ -31,6 +31,8 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 使用spring的类扫描方式来适配 Liquibase
+ *
  * Liquibase {@link PackageScanClassResolver} implementation that uses Spring's resource
  * scanning to locate classes. This variant is safe to use with Spring Boot packaged
  * executable JARs.

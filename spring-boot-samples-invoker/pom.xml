@@ -14,9 +14,10 @@
 	<description>Spring Boot Samples Invoker</description>
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
+		<skipTests>true</skipTests>
 	</properties>
     <modules>
-        <module>../spring-boot-samples/spring-boot-sample-undertow</module>
+<!--        <module>../spring-boot-samples/spring-boot-sample-undertow</module>-->
     </modules>
 
     <build>

@@ -29,6 +29,8 @@ import org.springframework.util.ObjectUtils;
 import java.lang.ref.WeakReference;
 
 /**
+ * 子容器监听父容器关闭事件 的监听器
+ *
  * Listener that closes the application context if its parent is closed. It listens for
  * refresh events and grabs the current context from there, and then listens for closed
  * events and propagates it down the hierarchy.
@@ -92,13 +94,16 @@ public class ParentContextCloserApplicationListener implements ApplicationListen
 			this.childContext = new WeakReference<>(childContext);
 		}
 
+		/**
+		 * 父容器关闭，子容器也需要关闭
+		 */
 		@Override
 		public void onApplicationEvent(ContextClosedEvent event) {
 			ConfigurableApplicationContext context = this.childContext.get();
 			if ((context != null)
 					&& (event.getApplicationContext() == context.getParent()) // 如果是父容器
 					&& context.isActive()) { // 并且当前容器是启动状态
-			    // 关闭当前容器
+			    // 关闭当前子容器
 				context.close();
 			}
 		}

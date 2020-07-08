@@ -76,7 +76,6 @@ public class AutoConfigurationImportSelector
 
 	private ResourceLoader resourceLoader;
 
-	// TODO 芋艿 可以暂时忽略
 	@Override
 	public String[] selectImports(AnnotationMetadata annotationMetadata) {
 		if (!isEnabled(annotationMetadata)) {
@@ -247,10 +246,6 @@ public class AutoConfigurationImportSelector
 	}
 
 	private List<String> filter(List<String> configurations, AutoConfigurationMetadata autoConfigurationMetadata) {
-//	    // 这里是艿艿乱加的。
-//	    if (true) {
-//	        return configurations;
-//        }
         // 声明需要用到的变量
 		long startTime = System.nanoTime(); // 记录开始时间，用于下面统计消耗的时间
 		String[] candidates = StringUtils.toStringArray(configurations); // 配置类的数组

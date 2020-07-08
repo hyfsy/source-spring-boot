@@ -111,6 +111,7 @@ final class FailureAnalyzers implements SpringBootExceptionReporter {
 	private FailureAnalysis analyze(Throwable failure, List<FailureAnalyzer> analyzers) {
 		for (FailureAnalyzer analyzer : analyzers) {
 			try {
+				// 循环分析出失败的原因
 				FailureAnalysis analysis = analyzer.analyze(failure);
 				if (analysis != null) {
 					return analysis;
@@ -124,6 +125,7 @@ final class FailureAnalyzers implements SpringBootExceptionReporter {
 	}
 
 	private boolean report(FailureAnalysis analysis, ClassLoader classLoader) {
+		// 内置暂时只有一个
 		List<FailureAnalysisReporter> reporters = SpringFactoriesLoader
 				.loadFactories(FailureAnalysisReporter.class, classLoader);
 		if (analysis == null || reporters.isEmpty()) {

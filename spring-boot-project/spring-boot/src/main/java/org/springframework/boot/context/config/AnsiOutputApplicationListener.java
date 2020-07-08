@@ -38,9 +38,6 @@ public class AnsiOutputApplicationListener
 
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-//	    if (true) {
-//	        return;
-//        }
 		ConfigurableEnvironment environment = event.getEnvironment();
 		// 根据环境变量 spring.output.ansi.enabled 的值，设置 AnsiOutput.enabled 属性
         environment.getProperty("spring.output.ansi.enabled");

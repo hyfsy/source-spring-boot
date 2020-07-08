@@ -16,6 +16,9 @@
 
 package sample.simple;
 
+import ch.qos.logback.core.pattern.color.ANSIConstants;
+import org.springframework.boot.ansi.*;
+import org.springframework.boot.context.properties.bind.Binder;
 import sample.simple.service.HelloWorldService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,52 @@ public class SampleSimpleApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SampleSimpleApplication.class, args);
+
+//		seeMXBean();
+
+//		prettyPrint();
+
+//		testRun(args);
+
+	}
+
+	public static void testRun(String[] args) {
+		SpringApplication springApplication = new SpringApplication(SampleSimpleApplication.class);
+		// 可在此处进行应用的配置
+		// springApplication.setXxx;
+		springApplication.run(args);
+	}
+
+	public static void seeMXBean() {
+		try {
+			Thread.sleep(Integer.MAX_VALUE);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * font {@link AnsiElement}: https://en.wikipedia.org/wiki/ANSI_escape_code
+	 * <p>
+	 * color {@link AnsiColors}: http://en.wikipedia.org/wiki/Color_difference#CIE94
+	 */
+	public static void prettyPrint() {
+		StringBuilder output = new StringBuilder();
+		output
+				.append("\033[33mtest first out\n").append("test second out\n")
+				.append(AnsiOutput.encode(AnsiColor.BRIGHT_RED)).append("test third out\n")
+				// 背景颜色是反的 ???
+				.append(AnsiOutput.encode(AnsiBackground.BRIGHT_WHITE))
+				.append(AnsiOutput.encode(AnsiColor.BRIGHT_CYAN))
+				.append(AnsiOutput.encode(AnsiStyle.UNDERLINE))
+				.append(AnsiOutput.encode(AnsiStyle.FAINT))
+				.append("test forth out\n");
+		System.out.println(output);
+	}
+
+	public void testBinder() {
+//		Binder.get(environment).bind("spring.output.ansi.enabled", AnsiOutput.Enabled.class)
+//				.ifBound(AnsiOutput::setEnabled);
 	}
 
 }

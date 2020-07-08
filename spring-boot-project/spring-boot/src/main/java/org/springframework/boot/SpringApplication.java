@@ -164,6 +164,9 @@ public class SpringApplication {
 	 */
 	public static final String BANNER_LOCATION_PROPERTY = SpringApplicationBannerPrinter.BANNER_LOCATION_PROPERTY;
 
+	/**
+	 * 应用程序运行在无外接设备环境下的处理
+	 */
 	private static final String SYSTEM_PROPERTY_JAVA_AWT_HEADLESS = "java.awt.headless";
 
 	private static final Log logger = LogFactory.getLog(SpringApplication.class);
@@ -224,7 +227,7 @@ public class SpringApplication {
 	private boolean headless = true;
 
     /**
-     * 是否注册 ShutdownHook 钩子
+     * 是否注册 ShutdownHook 钩子，在jvm退出时，调用AbstractApplicationContext的doClose方法
      */
 	private boolean registerShutdownHook = true;
 
@@ -293,6 +296,9 @@ public class SpringApplication {
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
 
+	/**
+	 * 通过当前的方法堆栈查找main函数所在类
+	 */
 	private Class<?> deduceMainApplicationClass() {
 		try {
 		    // 获得当前 StackTraceElement 数组
@@ -322,9 +328,9 @@ public class SpringApplication {
 		//
 		ConfigurableApplicationContext context = null;
 		Collection<SpringBootExceptionReporter> exceptionReporters = new ArrayList<>();
-		// 配置 headless 属性
+		// 配置 java.awt.headless 属性
 		configureHeadlessProperty();
-		// 获得 SpringApplicationRunListener 的数组，并启动监听
+		// 获得 SpringApplicationRunListener 的数组，并启动监听，默认只有一个
 		SpringApplicationRunListeners listeners = getRunListeners(args);
 		listeners.starting();
 		try {
@@ -356,7 +362,7 @@ public class SpringApplication {
 			}
 			// 通知 SpringApplicationRunListener 的数组，Spring 容器启动完成。
 			listeners.started(context);
-			// 调用 ApplicationRunner 或者 CommandLineRunner 的运行方法。TODO
+			// 调用 ApplicationRunner 或者 CommandLineRunner 的运行方法。
 			callRunners(context, applicationArguments);
 		} catch (Throwable ex) {
 		    // 如果发生异常，则进行处理，并抛出 IllegalStateException 异常
@@ -380,11 +386,11 @@ public class SpringApplication {
         // 创建 ConfigurableEnvironment 对象，并进行配置
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
-        // 通知 SpringApplicationRunListener 的数组，环境变量已经准备完成。
+        // 通知 SpringApplicationRunListener 的数组，环境变量已经准备完成
 		listeners.environmentPrepared(environment);
 		// 绑定 environment 到 SpringApplication 上
 		bindToSpringApplication(environment);
-		// 如果非自定义 environment ，则根据条件转换
+		// 如果非用户自定义的 environment ，则根据条件转换
 		if (!this.isCustomEnvironment) {
 			environment = new EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment, deduceEnvironmentClass());
 		}
@@ -431,7 +437,7 @@ public class SpringApplication {
 			((DefaultListableBeanFactory) beanFactory).setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
 		// Load the sources
-        // 加载 BeanDefinition 们
+        // 加载一些前期 BeanDefinition
 		Set<Object> sources = getAllSources();
 		Assert.notEmpty(sources, "Sources must not be empty");
 		load(context, sources.toArray(new Object[0]));
@@ -452,12 +458,18 @@ public class SpringApplication {
 		}
 	}
 
+	/**
+	 * 设置为 true可以防止无图形化外接设备的情况下使用awt组件抛出 HeadlessException
+	 * <p>
+	 * 详情：https://www.cnblogs.com/wudi-dudu/p/7871405.html
+	 */
 	private void configureHeadlessProperty() {
 		System.setProperty(SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, System.getProperty(
 				SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, Boolean.toString(this.headless)));
 	}
 
 	private SpringApplicationRunListeners getRunListeners(String[] args) {
+		// 构造函数的参数类型，构造 EventPublishingRunListener 对象
 		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
 		return new SpringApplicationRunListeners(logger, getSpringFactoriesInstances(
 				SpringApplicationRunListener.class, types, this, args));
@@ -573,14 +585,14 @@ public class SpringApplication {
 	 */
 	protected void configurePropertySources(ConfigurableEnvironment environment, String[] args) {
 		MutablePropertySources sources = environment.getPropertySources();
-		// 配置的 defaultProperties
+		// 1、添加用户自己配置的 defaultProperties
 		if (this.defaultProperties != null && !this.defaultProperties.isEmpty()) {
 			sources.addLast(new MapPropertySource("defaultProperties", this.defaultProperties));
 		}
-		// 来自启动参数的
+		// 2、添加来自jvm的启动参数
 		if (this.addCommandLineProperties && args.length > 0) {
 			String name = CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME;
-			if (sources.contains(name)) { // 已存在，就进行替换
+			if (sources.contains(name)) { // 已存在，就生成一个组合属性源添加
 				PropertySource<?> source = sources.get(name);
 				CompositePropertySource composite = new CompositePropertySource(name);
 				composite.addPropertySource(new SimpleCommandLinePropertySource(
@@ -594,6 +606,8 @@ public class SpringApplication {
 	}
 
 	/**
+	 * 添加用户自定义的 additionalProfiles
+	 * <p>
 	 * Configure which profiles are active (or active by default) for this application
 	 * environment. Additional profiles may be activated during configuration file
 	 * processing via the {@code spring.profiles.active} property.
@@ -612,6 +626,7 @@ public class SpringApplication {
 	}
 
 	private void configureIgnoreBeanInfo(ConfigurableEnvironment environment) {
+		// 默认会忽略
 		if (System.getProperty(CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME) == null) {
 			Boolean ignore = environment.getProperty("spring.beaninfo.ignore", Boolean.class, Boolean.TRUE);
 			System.setProperty(CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME, ignore.toString());
@@ -631,6 +646,7 @@ public class SpringApplication {
 	}
 
 	private Banner printBanner(ConfigurableEnvironment environment) {
+		// 不打印日志
 		if (this.bannerMode == Banner.Mode.OFF) {
 			return null;
 		}
@@ -638,9 +654,11 @@ public class SpringApplication {
 				? this.resourceLoader : new DefaultResourceLoader(getClassLoader());
 		SpringApplicationBannerPrinter bannerPrinter = new SpringApplicationBannerPrinter(
 				resourceLoader, this.banner);
+		// 打印log日志
 		if (this.bannerMode == Mode.LOG) {
 			return bannerPrinter.print(environment, this.mainApplicationClass, logger);
 		}
+		// 打印控制台日志
 		return bannerPrinter.print(environment, this.mainApplicationClass, System.out);
 	}
 
@@ -756,6 +774,8 @@ public class SpringApplication {
 	}
 
 	/**
+	 * 加载一些前期 bean，非容器正式加载
+	 *
 	 * Load beans into the application context.
 	 * @param context the context to load beans into
 	 * @param sources the sources to load
@@ -764,7 +784,7 @@ public class SpringApplication {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Loading source " + StringUtils.arrayToCommaDelimitedString(sources));
 		}
-		// 创建 BeanDefinitionLoader 对象
+		// 创建 BeanDefinitionLoader 对象，专门用来加载多种资源
 		BeanDefinitionLoader loader = createBeanDefinitionLoader(getBeanDefinitionRegistry(context), sources);
 		// 设置 loader 的属性
 		if (this.beanNameGenerator != null) {
@@ -883,7 +903,6 @@ public class SpringApplication {
 		}
 	}
 
-	// TODO
 	private void handleRunFailure(ConfigurableApplicationContext context,
 			Throwable exception,
 			Collection<SpringBootExceptionReporter> exceptionReporters,
@@ -974,6 +993,9 @@ public class SpringApplication {
 		return generators.getExitCode();
 	}
 
+	/**
+	 * 该异常可能实现了 ExitCodeGenerator的接口
+	 */
 	private int getExitCodeFromExitCodeGeneratorException(Throwable exception) {
 		if (exception == null) {
 			return 0;
