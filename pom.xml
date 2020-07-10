@@ -13,6 +13,8 @@
 		<revision>2.2.0.BUILD-SNAPSHOT</revision>
 		<main.basedir>${basedir}</main.basedir>
         <disable.checks>true</disable.checks>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<!-- Most elements are in profiles so they are stripped out during maven-flatten -->
 	<profiles>
