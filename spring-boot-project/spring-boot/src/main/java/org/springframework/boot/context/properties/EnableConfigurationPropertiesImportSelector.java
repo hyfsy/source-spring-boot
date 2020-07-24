@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 class EnableConfigurationPropertiesImportSelector implements ImportSelector {
 
     private static final String[] IMPORTS = {
+    		// 见名知意
             ConfigurationPropertiesBeanRegistrar.class.getName(),
             ConfigurationPropertiesBindingPostProcessorRegistrar.class.getName()};
 
@@ -65,6 +66,7 @@ class EnableConfigurationPropertiesImportSelector implements ImportSelector {
 
         @Override
         public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+        	// 获取 EnableConfigurationProperties 指定的配置类，注册到容器中
             getTypes(metadata)
                     .forEach((type) -> register(registry, (ConfigurableListableBeanFactory) registry, type));
         }

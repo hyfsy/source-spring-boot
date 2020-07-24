@@ -71,6 +71,7 @@ public class WebServerFactoryCustomizerBeanPostProcessor
 
 	@SuppressWarnings("unchecked")
 	private void postProcessBeforeInitialization(WebServerFactory webServerFactory) {
+		// 获取所有的 WebServerFactoryCustomizer，执行自定义方法
 		LambdaSafe
 				.callbacks(WebServerFactoryCustomizer.class, getCustomizers(),
 						webServerFactory)

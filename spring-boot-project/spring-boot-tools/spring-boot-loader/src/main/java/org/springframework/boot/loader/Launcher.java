@@ -45,8 +45,11 @@ public abstract class Launcher {
 	 * @throws Exception if the application fails to launch
 	 */
 	protected void launch(String[] args) throws Exception {
+		// 注册url协议的处理器
 		JarFile.registerUrlProtocolHandler();
+		// 创建自定义类加载器，加载jar、classes下的所有类
 		ClassLoader classLoader = createClassLoader(getClassPathArchives());
+		// 执行启动类的main方法
 		launch(args, getMainClass(), classLoader);
 	}
 
@@ -57,10 +60,12 @@ public abstract class Launcher {
 	 * @throws Exception if the classloader cannot be created
 	 */
 	protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
+		// 获取所有jar的url地址
 		List<URL> urls = new ArrayList<>(archives.size());
 		for (Archive archive : archives) {
 			urls.add(archive.getUrl());
 		}
+		// 创建加载这些url类的类加载器
 		return createClassLoader(urls.toArray(new URL[0]));
 	}
 
@@ -83,7 +88,9 @@ public abstract class Launcher {
 	 */
 	protected void launch(String[] args, String mainClass, ClassLoader classLoader)
 			throws Exception {
+		// 线程绑定自定义类加载器
 		Thread.currentThread().setContextClassLoader(classLoader);
+		// 执行项目的main方法
 		createMainMethodRunner(mainClass, args, classLoader).run();
 	}
 
@@ -96,6 +103,7 @@ public abstract class Launcher {
 	 */
 	protected MainMethodRunner createMainMethodRunner(String mainClass, String[] args,
 			ClassLoader classLoader) {
+		// 专门调用main方法
 		return new MainMethodRunner(mainClass, args);
 	}
 
@@ -114,6 +122,7 @@ public abstract class Launcher {
 	protected abstract List<Archive> getClassPathArchives() throws Exception;
 
 	protected final Archive createArchive() throws Exception {
+		// 获取 当前项目[jar] 所在的绝对路径
 		ProtectionDomain protectionDomain = getClass().getProtectionDomain();
 		CodeSource codeSource = protectionDomain.getCodeSource();
 		URI location = (codeSource != null) ? codeSource.getLocation().toURI() : null;

@@ -52,10 +52,12 @@ final class WelcomePageHandlerMapping extends AbstractUrlHandlerMapping {
 	WelcomePageHandlerMapping(TemplateAvailabilityProviders templateAvailabilityProviders,
 			ApplicationContext applicationContext, Optional<Resource> welcomePage,
 			String staticPathPattern) {
+		// 存在普通index静态页面
 		if (welcomePage.isPresent() && "/**".equals(staticPathPattern)) {
 			logger.info("Adding welcome page: " + welcomePage.get());
 			setRootViewName("forward:index.html");
 		}
+		// 模板可用的index静态页面
 		else if (welcomeTemplateExists(templateAvailabilityProviders,
 				applicationContext)) {
 			logger.info("Adding welcome page template: index");
@@ -66,6 +68,7 @@ final class WelcomePageHandlerMapping extends AbstractUrlHandlerMapping {
 	private boolean welcomeTemplateExists(
 			TemplateAvailabilityProviders templateAvailabilityProviders,
 			ApplicationContext applicationContext) {
+		// 判断是否存在可以处理index名称的模板引擎
 		return templateAvailabilityProviders.getProvider("index",
 				applicationContext) != null;
 	}
@@ -73,6 +76,7 @@ final class WelcomePageHandlerMapping extends AbstractUrlHandlerMapping {
 	private void setRootViewName(String viewName) {
 		ParameterizableViewController controller = new ParameterizableViewController();
 		controller.setViewName(viewName);
+		// 设置为根处理器，优先获取并处理
 		setRootHandler(controller);
 		setOrder(2);
 	}
@@ -80,6 +84,7 @@ final class WelcomePageHandlerMapping extends AbstractUrlHandlerMapping {
 	@Override
 	public Object getHandlerInternal(HttpServletRequest request) throws Exception {
 		for (MediaType mediaType : getAcceptedMediaTypes(request)) {
+			// 只针对 text/html 媒体类型的请求才处理
 			if (mediaType.includes(MediaType.TEXT_HTML)) {
 				return super.getHandlerInternal(request);
 			}

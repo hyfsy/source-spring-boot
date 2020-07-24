@@ -136,9 +136,13 @@ public class PropertiesLauncher extends Launcher {
 
 	public PropertiesLauncher() {
 		try {
+			// 获取当前项目所在目录
 			this.home = getHomeDirectory();
+			// 初始化 loader.properties 属性，注意初始化之前使用的loader属性只能从系统属性中获取
 			initializeProperties();
+			// 初始化加载的类路径，多个用[,]分割
 			initializePaths();
+			// 父类方法创建 Archive，对应于Jar、War
 			this.parent = createArchive();
 		}
 		catch (Exception ex) {
@@ -161,6 +165,7 @@ public class PropertiesLauncher extends Launcher {
 			configs.add(getProperty(CONFIG_LOCATION));
 		}
 		else {
+			// 多个配置名可用[,]分割
 			String[] names = getPropertyWithDefault(CONFIG_NAME, "loader").split(",");
 			for (String name : names) {
 				configs.add("file:" + getHomeDirectory() + "/" + name + ".properties");
@@ -346,6 +351,7 @@ public class PropertiesLauncher extends Launcher {
 				getClass().getClassLoader());
 		debug("Classpath: " + urls);
 		String customLoaderClassName = getProperty("loader.classLoader");
+		// 实例化指定的子类加载器，当前loader作为parent
 		if (customLoaderClassName != null) {
 			loader = wrapWithCustomClassLoader(loader, customLoaderClassName);
 			debug("Using custom class loader: " + customLoaderClassName);
@@ -589,6 +595,7 @@ public class PropertiesLauncher extends Launcher {
 
 	public static void main(String[] args) throws Exception {
 		PropertiesLauncher launcher = new PropertiesLauncher();
+		// 合并args和指定的args
 		args = launcher.getArgs(args);
 		launcher.launch(args);
 	}
@@ -613,6 +620,7 @@ public class PropertiesLauncher extends Launcher {
 	}
 
 	private void debug(String message) {
+		// 从系统属性中获取
 		if (Boolean.getBoolean(DEBUG)) {
 			System.out.println(message);
 		}

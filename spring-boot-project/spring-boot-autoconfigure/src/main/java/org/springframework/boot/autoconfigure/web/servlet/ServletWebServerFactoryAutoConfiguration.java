@@ -42,6 +42,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * Web服务器针对Servlet相关的自动配置
+ * <p>
  * {@link EnableAutoConfiguration Auto-configuration} for servlet web servers.
  *
  * @author Phillip Webb
@@ -61,12 +63,18 @@ import org.springframework.util.ObjectUtils;
 		ServletWebServerFactoryConfiguration.EmbeddedUndertow.class })
 public class ServletWebServerFactoryAutoConfiguration {
 
+	/**
+	 * 配置属性复制
+	 */
 	@Bean
 	public ServletWebServerFactoryCustomizer servletWebServerFactoryCustomizer(
 			ServerProperties serverProperties) {
 		return new ServletWebServerFactoryCustomizer(serverProperties);
 	}
 
+	/**
+	 * tomcat特有Servlet相关的配置
+	 */
 	@Bean
 	@ConditionalOnClass(name = "org.apache.catalina.startup.Tomcat")
 	public TomcatServletWebServerFactoryCustomizer tomcatServletWebServerFactoryCustomizer(
@@ -96,9 +104,11 @@ public class ServletWebServerFactoryAutoConfiguration {
 			if (this.beanFactory == null) {
 				return;
 			}
+			// 处理自定义web容器的自定义方法
 			registerSyntheticBeanIfMissing(registry,
 					"webServerFactoryCustomizerBeanPostProcessor",
 					WebServerFactoryCustomizerBeanPostProcessor.class);
+			// 处理错误页面的注册（ErrorPage）
 			registerSyntheticBeanIfMissing(registry,
 					"errorPageRegistrarBeanPostProcessor",
 					ErrorPageRegistrarBeanPostProcessor.class);

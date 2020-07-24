@@ -129,6 +129,7 @@ class ConfigurationPropertiesBinder {
 			handler = new ValidationBindHandler(handler, validators.toArray(new Validator[0]));
 		}
 		// 如果有 ConfigurationPropertiesBindHandlerAdvisor 元素，则进一步处理 handler 对象
+		// 自定义 BindHandler
 		for (ConfigurationPropertiesBindHandlerAdvisor advisor : getBindHandlerAdvisors()) {
 			handler = advisor.apply(handler);
 		}

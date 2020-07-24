@@ -35,6 +35,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 /**
+ * Web服务器的自动配置
+ * <p>
  * {@link EnableAutoConfiguration Auto-configuration} for embedded servlet and reactive
  * web servers customizations.
  *

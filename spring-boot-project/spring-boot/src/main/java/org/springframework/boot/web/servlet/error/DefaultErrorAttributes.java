@@ -39,6 +39,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
+ * 封装了返回的错误信息
+ *
  * Default implementation of {@link ErrorAttributes}. Provides the following attributes
  * when possible:
  * <ul>

@@ -125,6 +125,7 @@ public class ErrorMvcAutoConfiguration {
 	}
 
 	@Bean
+	// 指定 ErrorController 使用CGLIB代理
 	public static PreserveErrorControllerTargetClassPostProcessor preserveErrorControllerTargetClassPostProcessor() {
 		return new PreserveErrorControllerTargetClassPostProcessor();
 	}
@@ -152,6 +153,9 @@ public class ErrorMvcAutoConfiguration {
 
 	}
 
+	/**
+	 * 没有模板引擎能处理 /error ，则添加此默认的错误视图
+	 */
 	@Configuration
 	@ConditionalOnProperty(prefix = "server.error.whitelabel", name = "enabled", matchIfMissing = true)
 	@Conditional(ErrorTemplateMissingCondition.class)
@@ -196,6 +200,7 @@ public class ErrorMvcAutoConfiguration {
 				return ConditionOutcome
 						.noMatch(message.foundExactly("template from " + provider));
 			}
+			// 没有能处理 error 的模板引擎 则匹配
 			return ConditionOutcome
 					.match(message.didNotFind("error template view").atAll());
 		}
@@ -203,6 +208,8 @@ public class ErrorMvcAutoConfiguration {
 	}
 
 	/**
+	 * 默认错误页
+	 * <p>
 	 * Simple {@link View} implementation that writes a default HTML error page.
 	 */
 	private static class StaticView implements View {
@@ -242,6 +249,7 @@ public class ErrorMvcAutoConfiguration {
 		}
 
 		private String htmlEscape(Object input) {
+			// html转义
 			return (input != null) ? HtmlUtils.htmlEscape(input.toString()) : null;
 		}
 
@@ -280,6 +288,7 @@ public class ErrorMvcAutoConfiguration {
 
 		@Override
 		public void registerErrorPages(ErrorPageRegistry errorPageRegistry) {
+			// 配置web.xml中的<error-page>错误页
 			ErrorPage errorPage = new ErrorPage(this.dispatcherServletPath
 					.getRelativePath(this.properties.getError().getPath()));
 			errorPageRegistry.addErrorPages(errorPage);
@@ -306,6 +315,7 @@ public class ErrorMvcAutoConfiguration {
 					.getBeanNamesForType(ErrorController.class, false, false);
 			for (String errorControllerBean : errorControllerBeans) {
 				try {
+					// 指定 ErrorController 使用CGLIB代理目标类
 					beanFactory.getBeanDefinition(errorControllerBean).setAttribute(
 							AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
 				}

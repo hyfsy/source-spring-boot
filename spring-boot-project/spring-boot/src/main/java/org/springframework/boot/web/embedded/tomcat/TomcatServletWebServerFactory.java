@@ -124,6 +124,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 
 	private String protocol = DEFAULT_PROTOCOL;
 
+	// 跳过jar包内的tld文件扫描，加快tomcat启动速度
 	private Set<String> tldSkipPatterns = new LinkedHashSet<>(TldSkipPatterns.DEFAULT);
 
 	private Charset uriEncoding = DEFAULT_CHARSET;

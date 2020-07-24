@@ -86,8 +86,10 @@ public class ValidationBindHandler extends AbstractBindHandler {
 		Object validationTarget = getValidationTarget(target, context, result);
 		Class<?> validationType = target.getBoxedType().resolve();
 		if (validationTarget != null) {
+			// 真正执行校验
 			validateAndPush(name, validationTarget, validationType);
 		}
+		// 只要有一个异常，就结束校验
 		if (context.getDepth() == 0 && !this.exceptions.isEmpty()) {
 			throw this.exceptions.pop();
 		}
@@ -107,8 +109,10 @@ public class ValidationBindHandler extends AbstractBindHandler {
 	private void validateAndPush(ConfigurationPropertyName name, Object target,
 			Class<?> type) {
 		BindingResult errors = new BeanPropertyBindingResult(target, name.toString());
+		// 执行正在的绑定校验
 		Arrays.stream(this.validators).filter((validator) -> validator.supports(type))
 				.forEach((validator) -> validator.validate(target, errors));
+		// 添加校验异常
 		if (errors.hasErrors()) {
 			this.exceptions.push(getBindValidationException(name, errors));
 		}

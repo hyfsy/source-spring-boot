@@ -1,0 +1,8 @@
+server:
+  port: 8888
+hello:
+  name: aaa
+  age: 19
+spring:
+  mvc:
+    message-codes-resolver-format: PREFIX_ERROR_CODE

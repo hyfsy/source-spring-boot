@@ -70,6 +70,9 @@ public class ConfigurationBeanFactoryMetadata implements BeanFactoryPostProcesso
 		}
 	}
 
+	/**
+	 * 此方法暂时只供 ConfigurationPropertiesReportEndpoint 端点使用
+	 */
 	public <A extends Annotation> Map<String, Object> getBeansWithFactoryAnnotation(Class<A> type) {
 		Map<String, Object> result = new HashMap<>();
 		// 遍历 beansFactoryMetadata

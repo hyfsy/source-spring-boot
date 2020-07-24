@@ -283,7 +283,7 @@ public class AutoConfigureAnnotationProcessor extends AbstractProcessor {
 			if (attributes.containsKey("name")) {
 				return Collections.emptyList();
 			}
-			// 读取 "value"、`"type"` 对应的值，添加到 result 中
+			// 读取 "value"、"type" 对应的值，添加到 result 中
 			List<Object> result = new ArrayList<>();
 			extractValues(attributes.get("value")).forEach(result::add);
 			extractValues(attributes.get("type")).forEach(result::add);

@@ -102,7 +102,9 @@ public class DefaultErrorViewResolver implements ErrorViewResolver, Ordered {
 	@Override
 	public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status,
 			Map<String, Object> model) {
+		// 获取精确code值对应的页面
 		ModelAndView modelAndView = resolve(String.valueOf(status.value()), model);
+		// 不存在精确code值对应的页面，查找4xx、5xx
 		if (modelAndView == null && SERIES_VIEWS.containsKey(status.series())) {
 			modelAndView = resolve(SERIES_VIEWS.get(status.series()), model);
 		}
@@ -113,9 +115,11 @@ public class DefaultErrorViewResolver implements ErrorViewResolver, Ordered {
 		String errorViewName = "error/" + viewName;
 		TemplateAvailabilityProvider provider = this.templateAvailabilityProviders
 				.getProvider(errorViewName, this.applicationContext);
+		// 模板静态资源
 		if (provider != null) {
 			return new ModelAndView(errorViewName, model);
 		}
+		// 普通静态资源
 		return resolveResource(errorViewName, model);
 	}
 

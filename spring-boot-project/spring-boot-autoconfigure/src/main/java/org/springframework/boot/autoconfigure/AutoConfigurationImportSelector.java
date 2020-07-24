@@ -96,17 +96,17 @@ public class AutoConfigurationImportSelector
 	 * @return the auto-configurations that should be imported
 	 */
 	protected AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoConfigurationMetadata, AnnotationMetadata annotationMetadata) {
-	    // 1. 判断是否开启。如未开启，返回空串
+	    // 1. 判断是否开启自动配置。如未开启，返回空串
 		if (!isEnabled(annotationMetadata)) {
 			return EMPTY_ENTRY;
 		}
 		// 2. 获得注解的属性
 		AnnotationAttributes attributes = getAttributes(annotationMetadata);
-		// 3. 获得符合条件的配置类的数组
+		// 3. 获得 spring.factories 里的配置类的数组
 		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
 		// 3.1 移除重复的配置类
 		configurations = removeDuplicates(configurations);
-		// 4. 获得需要排除的配置类
+		// 4. 获得 @EnableAutoConfiguration 指定的需要排除的配置类
 		Set<String> exclusions = getExclusions(annotationMetadata, attributes);
 		// 4.1 校验排除的配置类是否合法
 		checkExcludedClasses(configurations, exclusions);
@@ -451,6 +451,7 @@ public class AutoConfigurationImportSelector
 			// 获得 processedConfigurations
 			Set<String> processedConfigurations = this.autoConfigurationEntries.stream()
 					.map(AutoConfigurationEntry::getConfigurations)
+					// 扁平化list：List<List<xxx>> -> List<xxx>
 					.flatMap(Collection::stream)
 					.collect(Collectors.toCollection(LinkedHashSet::new));
 			// 从 processedConfigurations 中，移除排除的
@@ -488,6 +489,9 @@ public class AutoConfigurationImportSelector
 
 	}
 
+	/**
+	 * 类似于 holder对象
+	 */
 	protected static class AutoConfigurationEntry {
 
         /**

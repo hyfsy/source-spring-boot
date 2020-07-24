@@ -125,8 +125,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		beanFactory.addBeanPostProcessor(new WebApplicationContextServletContextAwareProcessor(this));
 		// 忽略 ServletContextAware 接口
 		beanFactory.ignoreDependencyInterface(ServletContextAware.class);
-
-		// 注册 ExistingWebApplicationScopes
+		// 注册 Scopes
 		registerWebApplicationScopes();
 	}
 
@@ -183,8 +182,10 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 			// 获得 ServletContextInitializer 对象
             // 创建（获得） WebServer 对象
 			this.webServer = factory.getWebServer(getSelfInitializer());
-        // TODO 芋艿这个情况是？
-		} else if (servletContext != null) {
+		}
+		// 非内嵌Servlet容器初始化
+		// @see ContextLoader
+		else if (servletContext != null) {
 			try {
 				getSelfInitializer().onStartup(servletContext);
 			} catch (ServletException ex) {
@@ -223,7 +224,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * @return the self initializer
 	 * @see #prepareWebApplicationContext(ServletContext)
 	 */
-	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
+	private ServletContextInitializer getSelfInitializer() {
 		return this::selfInitialize; // 和下面等价
 //        return new ServletContextInitializer() {
 //
@@ -260,7 +261,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		ExistingWebApplicationScopes existingScopes = new ExistingWebApplicationScopes(getBeanFactory());
 		// 注册 ExistingWebApplicationScopes 到 WebApplicationContext 中
 		WebApplicationContextUtils.registerWebApplicationScopes(getBeanFactory());
-		// 恢复
+		// 恢复，防止第二步（默认范围）将用户自定义的两个范围覆盖了
 		existingScopes.restore();
 	}
 

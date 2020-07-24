@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-    package org.springframework.boot.autoconfigure.web.servlet;
+package org.springframework.boot.autoconfigure.web.servlet;
 
 import io.undertow.Undertow;
 import org.apache.catalina.startup.Tomcat;

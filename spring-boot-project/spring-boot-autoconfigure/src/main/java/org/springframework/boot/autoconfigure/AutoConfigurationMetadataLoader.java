@@ -27,8 +27,11 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * 一种通过 AbstractProcessor实现的自动配置的优化方案
+ * <p>
  * Internal utility used to load {@link AutoConfigurationMetadata}.
  *
+ * @see org.springframework.boot.autoconfigureprocessor.AutoConfigureAnnotationProcessor
  * @author Phillip Webb
  */
 final class AutoConfigurationMetadataLoader {

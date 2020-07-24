@@ -79,6 +79,9 @@ public class DispatcherServletAutoConfiguration {
 	 */
 	public static final String DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME = "dispatcherServletRegistration";
 
+	/**
+	 * 配置 DispatcherServlet 的自动配置类
+	 */
 	@Configuration
 	@Conditional(DefaultDispatcherServletCondition.class)
 	@ConditionalOnClass(ServletRegistration.class)
@@ -119,6 +122,9 @@ public class DispatcherServletAutoConfiguration {
 
 	}
 
+	/**
+	 * 注册 DispatcherServlet 的自动配置类
+	 */
 	@Configuration
 	@Conditional(DispatcherServletRegistrationCondition.class)
 	@ConditionalOnClass(ServletRegistration.class)
@@ -165,15 +171,18 @@ public class DispatcherServletAutoConfiguration {
 			ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
 			List<String> dispatchServletBeans = Arrays.asList(beanFactory
 					.getBeanNamesForType(DispatcherServlet.class, false, false));
+			// 用户指定了默认名称的 DispatcherServlet
 			if (dispatchServletBeans.contains(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)) {
 				return ConditionOutcome.noMatch(message.found("dispatcher servlet bean")
 						.items(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME));
 			}
+			// 默认名称相同，但不是 DispatcherServlet 类型
 			if (beanFactory.containsBean(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)) {
 				return ConditionOutcome
 						.noMatch(message.found("non dispatcher servlet bean")
 								.items(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME));
 			}
+			// 没有用户指定的 DispatcherServlet 存在
 			if (dispatchServletBeans.isEmpty()) {
 				return ConditionOutcome
 						.match(message.didNotFind("dispatcher servlet beans").atAll());
@@ -203,10 +212,13 @@ public class DispatcherServletAutoConfiguration {
 
 		private ConditionOutcome checkDefaultDispatcherName(
 				ConfigurableListableBeanFactory beanFactory) {
+			// 获取所有类型为DispatcherServlet的bean的名称
 			List<String> servlets = Arrays.asList(beanFactory
 					.getBeanNamesForType(DispatcherServlet.class, false, false));
+			// 判断容器中是否存在默认DispatcherServlet名称的bean
 			boolean containsDispatcherBean = beanFactory
 					.containsBean(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
+			// 有默认DispatcherServlet名称的bean，但是不是DispatcherServlet类型
 			if (containsDispatcherBean
 					&& !servlets.contains(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)) {
 				return ConditionOutcome

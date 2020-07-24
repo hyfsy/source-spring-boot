@@ -67,6 +67,9 @@ public class ErrorPageRegistrarBeanPostProcessor
 		return bean;
 	}
 
+	/**
+	 * 处理错误页面的注册
+	 */
 	private void postProcessBeforeInitialization(ErrorPageRegistry registry) {
 		for (ErrorPageRegistrar registrar : getRegistrars()) {
 			registrar.registerErrorPages(registry);

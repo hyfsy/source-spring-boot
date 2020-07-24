@@ -174,6 +174,7 @@ public class ConfigurationMetadataAnnotationProcessor extends AbstractProcessor 
 		}
 		if (roundEnv.processingOver()) {
 			try {
+				// 写入到一个 META-INF/spring-configuration-metadata.json 文件中
 				writeMetaData();
 			}
 			catch (Exception ex) {

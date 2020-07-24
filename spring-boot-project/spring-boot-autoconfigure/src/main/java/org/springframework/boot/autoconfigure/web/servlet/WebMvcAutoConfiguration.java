@@ -250,6 +250,9 @@ public class WebMvcAutoConfiguration {
 			mediaTypes.forEach(configurer::mediaType);
 		}
 
+		/**
+		 * 默认视图解析器，无前后缀
+		 */
 		@Bean
 		@ConditionalOnMissingBean
 		public InternalResourceViewResolver defaultViewResolver() {
@@ -353,6 +356,11 @@ public class WebMvcAutoConfiguration {
 			return (cachePeriod != null) ? (int) cachePeriod.getSeconds() : null;
 		}
 
+		/**
+		 * 添加欢迎页的处理器映射器
+		 * <p>
+		 * 普通html页面或模板页面都可以映射到，普通页面优先
+		 */
 		@Bean
 		public WelcomePageHandlerMapping welcomePageHandlerMapping(
 				ApplicationContext applicationContext) {
@@ -405,6 +413,9 @@ public class WebMvcAutoConfiguration {
 			return new OrderedRequestContextFilter();
 		}
 
+		/**
+		 * 专门处理 favicon.ico 请求
+		 */
 		@Configuration
 		@ConditionalOnProperty(value = "spring.mvc.favicon.enabled", matchIfMissing = true)
 		public static class FaviconConfiguration implements ResourceLoaderAware {
@@ -582,6 +593,7 @@ public class WebMvcAutoConfiguration {
 	}
 
 	@Configuration
+	// 校验resources.chain相关的enable属性
 	@ConditionalOnEnabledResourceChain
 	static class ResourceChainCustomizerConfiguration {
 
@@ -614,6 +626,7 @@ public class WebMvcAutoConfiguration {
 		private void configureResourceChain(ResourceProperties.Chain properties,
 				ResourceChainRegistration chain) {
 			Strategy strategy = properties.getStrategy();
+			// 根据配置添加资源解析器和转换器
 			if (properties.isCompressed()) {
 				chain.addResolver(new EncodedResourceResolver());
 			}

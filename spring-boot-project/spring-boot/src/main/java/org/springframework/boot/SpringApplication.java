@@ -639,6 +639,7 @@ public class SpringApplication {
 	 */
 	protected void bindToSpringApplication(ConfigurableEnvironment environment) {
 		try {
+			// 将Environment对象上的spring.main开头的属性，绑定到 SpringApplication 上
 			Binder.get(environment).bind("spring.main", Bindable.ofInstance(this));
 		} catch (Exception ex) {
 			throw new IllegalStateException("Cannot bind to SpringApplication", ex);

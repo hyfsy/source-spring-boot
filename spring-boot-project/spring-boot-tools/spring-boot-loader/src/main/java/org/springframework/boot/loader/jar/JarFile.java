@@ -385,9 +385,11 @@ public class JarFile extends java.util.jar.JarFile {
 	 * {@link URLStreamHandler} will be located to deal with jar URLs.
 	 */
 	public static void registerUrlProtocolHandler() {
+		// 获取存放 URLStreamHandler 的路径
 		String handlers = System.getProperty(PROTOCOL_HANDLER, "");
 		System.setProperty(PROTOCOL_HANDLER, ("".equals(handlers) ? HANDLERS_PACKAGE
 				: handlers + "|" + HANDLERS_PACKAGE));
+		// 重置已缓存的 URLStreamHandler 处理器
 		resetCachedUrlHandlers();
 	}
 
