@@ -47,7 +47,7 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 
 	@Override
 	public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
-		// 有自定义的配置文件，则使用指定配置文件进行初始化
+		// 有自定义的配置文件，则使用指定配置文件进行初始化（logging.config）
 	    if (StringUtils.hasLength(configLocation)) {
 			initializeWithSpecificConfig(initializationContext, configLocation, logFile);
 			return;
@@ -81,7 +81,7 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 			loadConfiguration(initializationContext, config, logFile);
 			return;
 		}
-		// 如果获取不到，则加载默认配置
+		// 如果获取不到，则加载默认配置（spring-boot包中的配置）
 		loadDefaults(initializationContext, logFile);
 	}
 
@@ -140,6 +140,8 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 	}
 
 	/**
+	 * 加载spring内嵌的默认的配置
+	 *
 	 * Load sensible defaults for the logging system.
 	 * @param initializationContext the logging initialization context
 	 * @param logFile the file to load or {@code null} if no log file is to be written
@@ -147,6 +149,8 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 	protected abstract void loadDefaults(LoggingInitializationContext initializationContext, LogFile logFile);
 
 	/**
+	 * 将对应的配置放入对应的日志框架中
+	 *
 	 * Load a specific configuration.
 	 * @param initializationContext the logging initialization context
 	 * @param location the location of the configuration to load (never {@code null})
@@ -155,6 +159,8 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 	protected abstract void loadConfiguration(LoggingInitializationContext initializationContext, String location, LogFile logFile);
 
 	/**
+	 * 重刷新日志配置
+	 *
 	 * Reinitialize the logging system if required. Called when
 	 * {@link #getSelfInitializationConfig()} is used and the log file hasn't changed. May
 	 * be used to reload configuration (for example to pick up additional System
@@ -181,6 +187,8 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 	}
 
 	/**
+	 * 为了兼容各个日志厂商的日志级别，维护和spring的映射关系
+	 *
 	 * Maintains a mapping between native levels and {@link LogLevel}.
 	 *
 	 * @param <T> the native level type

@@ -1,5 +1,9 @@
 server:
   port: 8888
+  error:
+    whitelabel:
+      enabled: true
+#    path: /sss
 hello:
   name: aaa
   age: 19

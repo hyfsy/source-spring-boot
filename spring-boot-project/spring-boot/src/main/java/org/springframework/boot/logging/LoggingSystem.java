@@ -115,6 +115,8 @@ public abstract class LoggingSystem {
 	}
 
 	/**
+	 * 获取所有的日志记录对象
+	 *
 	 * Returns a collection of the current configuration for all a {@link LoggingSystem}'s
 	 * loggers.
 	 * @return the current configurations
@@ -125,6 +127,8 @@ public abstract class LoggingSystem {
 	}
 
 	/**
+	 * 获取指定名称的日志记录对象
+	 *
 	 * Returns the current configuration for a {@link LoggingSystem}'s logger.
 	 * @param loggerName the name of the logger
 	 * @return the current configuration

@@ -39,7 +39,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * 封装了返回的错误信息
+ * 封装了返回的错误信息，无状态
+ * <p>
+ * 实现异常处理接口，指定高优先级，在异常处理时将错误消息放入request中
  *
  * Default implementation of {@link ErrorAttributes}. Provides the following attributes
  * when possible:
@@ -182,6 +184,9 @@ public class DefaultErrorAttributes
 		return null;
 	}
 
+	/**
+	 * 添加错误堆栈消息
+	 */
 	private void addStackTrace(Map<String, Object> errorAttributes, Throwable error) {
 		StringWriter stackTrace = new StringWriter();
 		error.printStackTrace(new PrintWriter(stackTrace));

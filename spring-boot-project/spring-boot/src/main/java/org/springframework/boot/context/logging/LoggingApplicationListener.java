@@ -159,6 +159,9 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 
 	private int order = DEFAULT_ORDER;
 
+	/**
+	 * 解析通过命令行运行传入的参数，如 --trace
+	 */
 	private boolean parseArgs = true;
 
 	private LogLevel springBootLogging = null;
@@ -240,6 +243,8 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	}
 
 	/**
+	 * 主要的日志系统初始化方法
+	 *
 	 * Initialize the logging system according to preferences expressed through the
 	 * {@link Environment} and the classpath.
 	 * @param environment the environment
@@ -250,10 +255,11 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		new LoggingSystemProperties(environment).apply();
 		// 初始化 LogFile，设置日志的路径及文件名
 		LogFile logFile = LogFile.get(environment);
+		// 俩属性放到系统属性中
 		if (logFile != null) {
 			logFile.applyToSystemProperties();
 		}
-		// 初始化早期的 Spring Boot Logging 级别
+		// 初始化早期的 Spring Boot Logging 级别（命令行的方式）
 		initializeEarlyLoggingLevel(environment);
 		// 初始化 LoggingSystem 日志系统
 		initializeSystem(environment, this.loggingSystem, logFile);
@@ -306,7 +312,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	}
 
 	private void initializeFinalLoggingLevels(ConfigurableEnvironment environment, LoggingSystem system) {
-		// 如果 springBootLogging 非空，则设置到日志级别
+		// 如果 springBootLogging 非空，则设置到日志级别（主级别）
 	    if (this.springBootLogging != null) {
 			initializeLogLevel(system, this.springBootLogging);
 		}

@@ -96,6 +96,8 @@ public class LogFile {
 	}
 
 	/**
+	 * 将俩属性放到系统属性中
+	 *
 	 * Apply log file details to {@code LOG_PATH} and {@code LOG_FILE} system properties.
 	 */
 	public void applyToSystemProperties() {

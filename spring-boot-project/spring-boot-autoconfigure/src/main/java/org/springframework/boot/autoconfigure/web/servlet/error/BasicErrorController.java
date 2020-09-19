@@ -90,6 +90,9 @@ public class BasicErrorController extends AbstractErrorController {
 				request, isIncludeStackTrace(request, MediaType.TEXT_HTML)));
 		response.setStatus(status.value());
 		ModelAndView modelAndView = resolveErrorView(request, response, status, model);
+		// 没有 ModelAndView 返回，则使用默认的 error view
+		// 如果指定 server.error.whitelabel.enabled = false，则会 Circular view path [error]
+		// /error -> /error
 		return (modelAndView != null) ? modelAndView : new ModelAndView("error", model);
 	}
 

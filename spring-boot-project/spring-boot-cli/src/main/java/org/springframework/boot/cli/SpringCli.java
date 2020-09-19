@@ -67,6 +67,9 @@ public final class SpringCli {
 		}
 	}
 
+	/**
+	 * SPI获取 CommandFactory 添加其创建的命令
+	 */
 	private static void addServiceLoaderCommands(CommandRunner runner) {
 		ServiceLoader<CommandFactory> factories = ServiceLoader
 				.load(CommandFactory.class);

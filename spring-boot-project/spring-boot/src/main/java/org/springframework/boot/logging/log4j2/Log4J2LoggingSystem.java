@@ -172,6 +172,7 @@ public class Log4J2LoggingSystem extends Slf4JLoggingSystem {
 			LoggerContext ctx = getLoggerContext();
 			URL url = ResourceUtils.getURL(location);
 			ConfigurationSource source = getConfigurationSource(url);
+			// 将所有的日志配置放入log4j2的 LoggerContext 中
 			ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
 		}
 		catch (Exception ex) {

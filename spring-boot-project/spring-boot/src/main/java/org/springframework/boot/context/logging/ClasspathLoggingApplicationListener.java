@@ -66,11 +66,11 @@ public final class ClasspathLoggingApplicationListener implements GenericApplica
 
 	@Override
 	public boolean supportsEventType(ResolvableType resolvableType) {
-		Class<?> type = resolvableType.getRawClass(); // 使用 ResolvableType 类，可以解析当前传入的参数的泛型，从而后的事件类型
+		Class<?> type = resolvableType.getRawClass(); // 使用 ResolvableType 类，可以解析当前传入的参数的泛型，从而获取事件类型
 		if (type == null) {
 			return false;
 		}
-		// 判断是否需为 ApplicationEnvironmentPreparedEvent 或者 ApplicationFailedEvent 事件
+		// 判断是否为 ApplicationEnvironmentPreparedEvent 或者 ApplicationFailedEvent 事件
 		return ApplicationEnvironmentPreparedEvent.class.isAssignableFrom(type)
 				|| ApplicationFailedEvent.class.isAssignableFrom(type);
 	}

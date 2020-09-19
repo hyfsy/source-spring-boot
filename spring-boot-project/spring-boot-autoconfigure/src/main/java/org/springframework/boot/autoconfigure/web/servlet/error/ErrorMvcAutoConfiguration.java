@@ -289,6 +289,7 @@ public class ErrorMvcAutoConfiguration {
 		@Override
 		public void registerErrorPages(ErrorPageRegistry errorPageRegistry) {
 			// 配置web.xml中的<error-page>错误页
+			// 默认code为0，当遇到错误时，tomcat会转发该code对应的请求
 			ErrorPage errorPage = new ErrorPage(this.dispatcherServletPath
 					.getRelativePath(this.properties.getError().getPath()));
 			errorPageRegistry.addErrorPages(errorPage);
