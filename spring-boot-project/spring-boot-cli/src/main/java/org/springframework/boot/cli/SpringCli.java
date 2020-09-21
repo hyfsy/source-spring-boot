@@ -51,6 +51,7 @@ public final class SpringCli {
 		System.setProperty("java.awt.headless", Boolean.toString(true));
 		LogbackInitializer.initialize();
 
+		// 控制命令的分配及运行流程的引导
 		CommandRunner runner = new CommandRunner("spring");
 		ClassUtils.overrideThreadContextClassLoader(createExtendedClassLoader(runner));
 		runner.addCommand(new HelpCommand(runner));

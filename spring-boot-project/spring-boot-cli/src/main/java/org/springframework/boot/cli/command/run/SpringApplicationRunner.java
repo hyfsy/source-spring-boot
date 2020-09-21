@@ -97,12 +97,16 @@ public class SpringApplicationRunner {
 	public void compileAndRun() throws Exception {
 		synchronized (this.monitor) {
 			try {
+				// 先停止
 				stop();
+				// groovy编译
 				Class<?>[] compiledSources = compile();
+				// 开启线程，监视文件的改变
 				monitorForChanges();
 				// Run in new thread to ensure that the context classloader is setup
 				this.runThread = new RunThread(compiledSources);
 				this.runThread.start();
+				// 强制该线程执行
 				this.runThread.join();
 			}
 			catch (Exception ex) {
@@ -169,6 +173,7 @@ public class SpringApplicationRunner {
 		public void run() {
 			synchronized (this.monitor) {
 				try {
+					// 引导启动一个应用上下文
 					this.applicationContext = new SpringApplicationLauncher(
 							getContextClassLoader()).launch(this.compiledSources,
 									SpringApplicationRunner.this.args);
@@ -218,6 +223,7 @@ public class SpringApplicationRunner {
 			super("filewatcher-" + (watcherCounter++));
 			this.previous = 0;
 			this.sources = getSourceFiles();
+			// 初始化所有文件中最大的修改时间
 			for (File file : this.sources) {
 				if (file.exists()) {
 					long current = file.lastModified();
@@ -253,12 +259,15 @@ public class SpringApplicationRunner {
 		public void run() {
 			while (true) {
 				try {
+					// 每秒监听一次文件变化
 					Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 					for (File file : this.sources) {
 						if (file.exists()) {
+							// current大说明修改过了
 							long current = file.lastModified();
 							if (this.previous < current) {
 								this.previous = current;
+								// 关闭应用并重新启动
 								compileAndRun();
 							}
 						}

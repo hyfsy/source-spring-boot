@@ -238,20 +238,27 @@ public class CommandRunner implements Iterable<Command> {
 	}
 
 	private int handleError(boolean debug, Exception ex) {
+		// 异常对应的选项
 		Set<CommandException.Option> options = NO_EXCEPTION_OPTIONS;
+
+		// 命令异常则初始化异常选项
 		if (ex instanceof CommandException) {
 			options = ((CommandException) ex).getOptions();
+			// 重抛该异常
 			if (options.contains(CommandException.Option.RETHROW)) {
 				throw (CommandException) ex;
 			}
 		}
 		boolean couldNotShowMessage = false;
+		// 打印错误消息
 		if (!options.contains(CommandException.Option.HIDE_MESSAGE)) {
 			couldNotShowMessage = !errorMessage(ex.getMessage());
 		}
+		// 展示可用命令
 		if (options.contains(CommandException.Option.SHOW_USAGE)) {
 			showUsage();
 		}
+		// 打印错误堆栈
 		if (debug || couldNotShowMessage
 				|| options.contains(CommandException.Option.STACK_TRACE)) {
 			printStackTrace(ex);

@@ -154,6 +154,7 @@ public class Shell {
 				line += this.consoleReader.readLine("> ");
 			}
 			if (StringUtils.hasLength(line)) {
+				// 获取命令并处理
 				String[] args = this.argumentDelimiter.parseArguments(line);
 				this.commandRunner.runAndHandleErrors(args);
 			}

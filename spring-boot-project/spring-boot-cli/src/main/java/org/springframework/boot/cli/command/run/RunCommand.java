@@ -106,6 +106,7 @@ public class RunCommand extends OptionParsingCommand {
 				SpringApplicationRunnerConfiguration configuration = new SpringApplicationRunnerConfigurationAdapter(
 						options, this, repositoryConfiguration);
 
+				// 获取运行器并启动应用
 				this.runner = new SpringApplicationRunner(configuration,
 						sourceOptions.getSourcesArray(), sourceOptions.getArgsArray());
 				this.runner.compileAndRun();
