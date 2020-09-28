@@ -49,7 +49,7 @@ public class SampleSimpleApplication implements CommandLineRunner {
 
 //		seeMXBean();
 
-//		prettyPrint();
+		prettyPrint();
 
 //		testRun(args);
 
@@ -84,8 +84,14 @@ public class SampleSimpleApplication implements CommandLineRunner {
 				.append(AnsiOutput.encode(AnsiBackground.BRIGHT_WHITE))
 				.append(AnsiOutput.encode(AnsiColor.BRIGHT_CYAN))
 				.append(AnsiOutput.encode(AnsiStyle.UNDERLINE))
+				// ???
 				.append(AnsiOutput.encode(AnsiStyle.FAINT))
-				.append("test forth out\n");
+				.append("test forth out\n")
+				.append(AnsiOutput.encode(AnsiStyle.NORMAL))
+				// .append(AnsiOutput.encode(AnsiColor.DEFAULT))
+				.append("aaa\n")
+				.append(AnsiOutput.encode(AnsiStyle.FAINT)) // 清除样式使用
+				.append("aaa\n");
 		System.out.println(output);
 	}
 

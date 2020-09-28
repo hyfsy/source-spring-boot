@@ -25,6 +25,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
+ * 指定控制台的颜色输出，通过对应的日志扩展进行输出（可查看每个日志系统包下的扩展功能）
+ *
  * An {@link ApplicationListener} that configures {@link AnsiOutput} depending on the
  * value of the property {@code spring.output.ansi.enabled}. See {@link Enabled} for valid
  * values.
@@ -40,6 +42,7 @@ public class AnsiOutputApplicationListener
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 		ConfigurableEnvironment environment = event.getEnvironment();
 		// 根据环境变量 spring.output.ansi.enabled 的值，设置 AnsiOutput.enabled 属性
+		// 注意！该环境变量默认是 detect ，但是在直接启动Application时，idea会自动指定-Dxxx 为 always
         environment.getProperty("spring.output.ansi.enabled");
 		Binder.get(environment).bind("spring.output.ansi.enabled", AnsiOutput.Enabled.class)
                 .ifBound(AnsiOutput::setEnabled);

@@ -38,6 +38,10 @@ import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.ansi.AnsiStyle;
 
 /**
+ * log4j2的格式转换器，专门处理spring的自定义颜色，核心format方法进行颜色的字符添加
+ * <p>
+ * 算是spring对于log4j2的日志格式的模式扩展
+ *
  * Log4j2 {@link LogEventPatternConverter} colors output using the {@link AnsiOutput}
  * class. A single option 'styling' can be provided to the converter, or if not specified
  * color styling will be picked based on the logging level.
@@ -126,6 +130,7 @@ public final class ColorConverter extends LogEventPatternConverter {
 			if (element == null) {
 				// Assume highlighting
 				element = LEVELS.get(event.getLevel().intLevel());
+				// 日志级别，默认绿色
 				element = (element != null) ? element : AnsiColor.GREEN;
 			}
 			appendAnsiString(toAppendTo, buf.toString(), element);

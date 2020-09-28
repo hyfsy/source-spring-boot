@@ -30,19 +30,40 @@ public abstract class AnsiOutput {
 
 	private static final String ENCODE_JOIN = ";";
 
+	/**
+	 * 1. 首要判断
+	 */
 	private static Enabled enabled = Enabled.DETECT;
 
+	/**
+	 * 2. 其次判断
+	 */
 	private static Boolean consoleAvailable;
 
+	/**
+	 * 缓存判断结果
+	 */
 	private static Boolean ansiCapable;
 
+	/**
+	 * 当前操作系统名称，window默认控制台不输出颜色
+	 */
 	private static final String OPERATING_SYSTEM_NAME = System.getProperty("os.name")
 			.toLowerCase(Locale.ENGLISH);
 
+	/**
+	 * 颜色开头
+	 */
 	private static final String ENCODE_START = "\033[";
 
+	/**
+	 * 颜色结尾
+	 */
 	private static final String ENCODE_END = "m";
 
+	/**
+	 * 重置颜色的字符
+	 */
 	private static final String RESET = "0;" + AnsiColor.DEFAULT;
 
 	/**
@@ -74,6 +95,7 @@ public abstract class AnsiOutput {
 	 */
 	public static String encode(AnsiElement element) {
 		if (isEnabled()) {
+			// 隐式调用了 element.toString() 方法
 			return ENCODE_START + element + ENCODE_END;
 		}
 		return "";
@@ -87,6 +109,7 @@ public abstract class AnsiOutput {
 	 */
 	public static String toString(Object... elements) {
 		StringBuilder sb = new StringBuilder();
+		// 判断是否输出彩色文字
 		if (isEnabled()) {
 			buildEnabled(sb, elements);
 		}
@@ -100,6 +123,7 @@ public abstract class AnsiOutput {
 		boolean writingAnsi = false;
 		boolean containsEncoding = false;
 		for (Object element : elements) {
+			// 颜色字符指定开头
 			if (element instanceof AnsiElement) {
 				containsEncoding = true;
 				if (!writingAnsi) {
@@ -110,40 +134,60 @@ public abstract class AnsiOutput {
 					sb.append(ENCODE_JOIN);
 				}
 			}
+			// 颜色字符指定结尾
 			else {
 				if (writingAnsi) {
 					sb.append(ENCODE_END);
 					writingAnsi = false;
 				}
 			}
+			// 添加中间字符
 			sb.append(element);
 		}
+
+		// 添加 重置颜色 字符
 		if (containsEncoding) {
-			sb.append(writingAnsi ? ENCODE_JOIN : ENCODE_START);
-			sb.append(RESET);
-			sb.append(ENCODE_END);
+			sb.append(writingAnsi ? ENCODE_JOIN : ENCODE_START); // 开头
+			sb.append(RESET); // 之间
+			sb.append(ENCODE_END); // 结尾
 		}
 	}
 
+	/**
+	 * console添加颜色相关字符
+	 */
 	private static void buildDisabled(StringBuilder sb, Object[] elements) {
 		for (Object element : elements) {
+			// 不是AnsiElement对象才进行日志的字符添加
 			if (!(element instanceof AnsiElement) && element != null) {
 				sb.append(element);
 			}
 		}
 	}
 
+	/**
+	 * 通过此方法判断是否需要颜色输出
+	 */
 	private static boolean isEnabled() {
+		// 扫描模式
 		if (enabled == Enabled.DETECT) {
 			if (ansiCapable == null) {
 				ansiCapable = detectIfAnsiCapable();
 			}
 			return ansiCapable;
 		}
+		// always则直接启用
 		return enabled == Enabled.ALWAYS;
 	}
 
 	private static boolean detectIfAnsiCapable() {
+
+		/*
+		 * 只要是window系统就禁用
+		 * 其他系统指定为true就启用
+		 * 其他系统指定为null则判断System.console() 该方法不在IDE中才不会返回null （不是ide启动的项目就启用）
+		 */
+
 		try {
 			if (Boolean.FALSE.equals(consoleAvailable)) {
 				return false;
