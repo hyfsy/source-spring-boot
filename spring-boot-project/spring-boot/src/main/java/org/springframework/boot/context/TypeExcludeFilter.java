@@ -28,6 +28,8 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
+ * 综合所有的类型排除过滤实现，主要用于test中
+ *
  * Provides exclusion {@link TypeFilter TypeFilters} that are loaded from the
  * {@link BeanFactory} and automatically applied to {@code SpringBootApplication}
  * scanning. Can also be used directly with {@code @ComponentScan} as follows:
@@ -63,6 +65,7 @@ public class TypeExcludeFilter implements TypeFilter, BeanFactoryAware {
 				&& getClass() == TypeExcludeFilter.class) {
 			Collection<TypeExcludeFilter> delegates = ((ListableBeanFactory) this.beanFactory)
 					.getBeansOfType(TypeExcludeFilter.class).values();
+			// 获取所有的剩余类型过滤器，进行匹配
 			for (TypeExcludeFilter delegate : delegates) {
 				if (delegate.match(metadataReader, metadataReaderFactory)) {
 					return true;

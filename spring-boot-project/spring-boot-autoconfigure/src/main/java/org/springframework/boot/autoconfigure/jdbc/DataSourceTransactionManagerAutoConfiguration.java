@@ -19,6 +19,7 @@ package org.springframework.boot.autoconfigure.jdbc;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -59,9 +60,18 @@ public class DataSourceTransactionManagerAutoConfiguration {
 		DataSourceTransactionManagerConfiguration(DataSource dataSource,
 				ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
 			this.dataSource = dataSource;
+
+			// 可选的获取，不理解为什么不直接使用 @Autowired，效果一样，有待考察
 			this.transactionManagerCustomizers = transactionManagerCustomizers
 					.getIfAvailable();
 		}
+
+		// 自己编写测试用
+		// DataSourceTransactionManagerConfiguration(DataSource dataSource, @Autowired(required = false) TransactionManagerCustomizers transactionManagerCustomizers) {
+		// 	this.dataSource = dataSource;
+		//
+		// 	this.transactionManagerCustomizers = transactionManagerCustomizers;
+		// }
 
 		@Bean
 		@ConditionalOnMissingBean(PlatformTransactionManager.class)

@@ -27,6 +27,8 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
+ * 此过滤器实现仅匹配 @Configuration 和 @EnableAutoConfiguration 同时存在的类
+ *
  * A {@link TypeFilter} implementation that matches registered auto-configuration classes.
  *
  * @author Stephane Nicoll

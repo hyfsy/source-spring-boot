@@ -10,3 +10,8 @@ hello:
 spring:
   mvc:
     message-codes-resolver-format: PREFIX_ERROR_CODE
+#  datasource:
+#    username: "root"
+#    password: "hyflearn"
+#    url: "jdbc:mysql://127.0.0.1:3306/fsfts?serverTimezone=UTC&useSSL=true&useUnicode=true&characterEncoding=UTF-8&nullNamePatternMatchesAll=true&allowMultiQueries=true"
+#    driver-class-name: com.mysql.cj.jdbc.Driver

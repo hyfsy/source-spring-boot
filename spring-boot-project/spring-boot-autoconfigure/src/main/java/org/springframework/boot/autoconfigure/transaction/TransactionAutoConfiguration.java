@@ -91,6 +91,9 @@ public class TransactionAutoConfiguration {
 
 		}
 
+		/**
+		 * 此处可看到，SpringBoot中默认采用了CGLIB代理
+		 */
 		@Configuration
 		@EnableTransactionManagement(proxyTargetClass = true)
 		@ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "true", matchIfMissing = true)
