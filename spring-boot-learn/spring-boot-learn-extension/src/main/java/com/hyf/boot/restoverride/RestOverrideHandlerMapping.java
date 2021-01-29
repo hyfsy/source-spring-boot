@@ -29,24 +29,6 @@ public class RestOverrideHandlerMapping extends RequestMappingHandlerMapping {
 
 	@Override
 	protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
-
-		boolean hasOverridden = restOverride(handler, method, mapping);
-		if (hasOverridden) {
-			return;
-		}
-
-		// 注册
-		super.registerHandlerMethod(handler, method, mapping);
-	}
-
-	@Override
-	protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
-		// 防止jrebel热刷新出现注册不了的情况
-		this.handlerMethods.clear();
-		this.mappingInfos.clear();
-	}
-
-	protected boolean restOverride(Object handler, Method method, RequestMappingInfo mapping) {
 		PatternsRequestCondition patternsCondition = mapping.getPatternsCondition();
 		for (String path : patternsCondition.getPatterns()) {
 			// 1. 无重复直接注册
@@ -61,7 +43,7 @@ public class RestOverrideHandlerMapping extends RequestMappingHandlerMapping {
 			// 3. 判断是否覆盖已存在的HandlerMethod
 			else {
 				if (!canOverride(path, handler, method, mapping)) {
-					return true;
+					return;
 				}
 
 				// 覆盖
@@ -70,7 +52,16 @@ public class RestOverrideHandlerMapping extends RequestMappingHandlerMapping {
 				this.mappingInfos.put(path, mapping);
 			}
 		}
-		return false;
+
+		// 注册
+		super.registerHandlerMethod(handler, method, mapping);
+	}
+
+	@Override
+	protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
+		// 防止jrebel热刷新出现注册不了的情况
+		this.handlerMethods.clear();
+		this.mappingInfos.clear();
 	}
 
 	/**
@@ -83,18 +74,17 @@ public class RestOverrideHandlerMapping extends RequestMappingHandlerMapping {
 	 * @return true表示覆盖已有的HandlerMethod，否则返回false
 	 */
 	protected boolean canOverride(String path, Object handler, Method method, RequestMappingInfo mapping) {
-		DefaultListableBeanFactory factory = (DefaultListableBeanFactory) super.getApplicationContext().getAutowireCapableBeanFactory();
-
 		RestOverride methodAnnotation = AnnotationUtils.findAnnotation(method, RestOverride.class);
 		if (methodAnnotation != null) {
 			return true;
 		}
 
-		RestOverride classAnnotation = AnnotationUtils.findAnnotation(factory.getType((String) handler), RestOverride.class);
+		RestOverride classAnnotation = AnnotationUtils.findAnnotation(method.getDeclaringClass(), RestOverride.class);
 		if (classAnnotation != null) {
 			return true;
 		}
 
+		DefaultListableBeanFactory factory = (DefaultListableBeanFactory) super.getApplicationContext().getAutowireCapableBeanFactory();
 		BeanDefinition candidate = factory.getBeanDefinition((String) handler);
 		return candidate.isPrimary();
 	}
